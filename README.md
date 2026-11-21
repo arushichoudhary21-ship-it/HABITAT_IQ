@@ -136,35 +136,7 @@ python -m http.server 8000
 ```
 Open `http://localhost:8000` in your browser.
 
----
 
-## 🌐 How to Deploy to GitHub Pages (For Hackathon Submission)
-
-1. Open PowerShell and navigate to the project directory:
-   ```powershell
-   cd "C:\Users\Sonu Yadav\.gemini\antigravity\scratch\habitat-iq"
-   git init
-   git add .
-   git commit -m "Complete HABITAT IQ platform with live satellite map for ASTRA 2026"
-   ```
-
-2. Create a public repository on GitHub named `habitat-iq` and push your code:
-   ```powershell
-   git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/habitat-iq.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-3. In your GitHub repository:
-   - Go to **Settings** → **Pages** (in the left sidebar).
-   - Under **Build and deployment** > **Source**, choose **Deploy from a branch**.
-   - Under Branch, select `main` and `/ (root)`.
-   - Click **Save**.
-
-Your platform will be live within 60 seconds at:  
-`https://<YOUR_GITHUB_USERNAME>.github.io/habitat-iq/`
-
----
 
 ## 🏆 Hackathon Credits
 - **Event:** ASTRA 2026 Hackathon
