@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HABITAT IQ — Forest Intelligence, Wildlife Protection & Space-Service Resilience</title>
+  <meta name="description" content="AI-powered forest intelligence and operational planning platform combining ISRO satellite telemetry, live satellite map, wildlife corridor analysis, disaster risk assessment, and disruption-tolerant satellite contact scheduling.">
+
+  <!-- Google Fonts: Newsreader (Editorial Serif) & Plus Jakarta Sans / JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS & JS for Live Satellite Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Site Header / Navigation
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="brand-wrapper">
+        <div class="brand-logo-mark" aria-hidden="true">
+          <!-- Leaf & Orbit Line Icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+            <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title">HABITAT IQ</span>
+          <span class="brand-badge">ISRO Geospatial Telemetry</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#mapSection" class="active">Live Satellite Map</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#sources">ISRO Portals</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-controls">
+        <label for="regionSelect" class="sr-only">Active Forest Region</label>
+        <select id="regionSelect" class="region-dropdown-select" title="Switch Indian Forest Region">
+          <option value="sundarbans">Sundarbans Biosphere (West Bengal)</option>
+          <option value="kaziranga">Kaziranga National Park (Assam)</option>
+          <option value="western-ghats">Western Ghats (Wayanad/Nilgiri)</option>
+          <option value="corbett">Jim Corbett National Park (Uttarakhand)</option>
+          <option value="bandhavgarh">Bandhavgarh National Park (Madhya Pradesh)</option>
+        </select>
+
+        <button id="exportBriefingBtn" class="btn btn-secondary btn-sm" title="Generate printable field briefing">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Field Briefing
+        </button>
+
+        <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       1. Hero Section
+       ========================================================================== -->
+  <section id="home" class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-meta-strap">
+          <span class="source-pill">ASTRA 2026 · ANTERiX Club</span>
+          <span class="badge-simulated">ISRO Synthetic Telemetry</span>
+          <span class="source-badge isro">Bhuvan · MOSDAC · VEDAS · Bhoonidhi</span>
+        </div>
+
+        <h1 class="hero-title">
+          Forest Intelligence &amp; <em>Space-Service</em> Resilience.
+        </h1>
+
+        <div class="hero-tagline">
+          “See the threat. Predict the risk. Protect the habitat. Stay connected.”
+        </div>
+
+        <p class="hero-desc">
+          HABITAT IQ is an AI-powered forest intelligence and operational planning platform. It combines satellite-based environmental monitoring, wildlife habitat analysis, disaster risk assessment and satellite communication scheduling to help forest-monitoring teams understand environmental threats, identify vulnerable ecosystems, predict satellite contact opportunities and plan field-report delivery, even under simulated satellite-service disruptions.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#mapSection" class="btn btn-primary">
+            <!-- Satellite Map Icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+              <line x1="9" y1="3" x2="9" y2="18"></line>
+              <line x1="15" y1="6" x2="15" y2="21"></line>
+            </svg>
+            Open Live Map
+          </a>
+          <button id="heroChatTrigger" class="btn btn-secondary" onclick="document.getElementById('chatLauncher').click()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Ask HABITAT IQ
+          </button>
+        </div>
+
+        <div class="hero-data-sources-row">
+          <span class="label">Telemetry Streams:</span>
+          <span>Bhuvan (NRSC)</span> · 
+          <span>MOSDAC (SAC)</span> · 
+          <span>VEDAS (SAC)</span> · 
+          <span>Bhoonidhi (NRSC)</span>
+        </div>
+      </div>
+
+      <!-- Hero Map Preview Card -->
+      <div class="map-preview-card">
+        <div class="map-card-header" style="margin-bottom: 0.65rem; padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong id="heroPreviewTitle" style="font-size: 0.95rem; color: var(--forest-950); display: block;">Sundarbans Delta Preview</strong>
+            <span id="heroPreviewCoords" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-subtle);">21.9497° N, 88.9007° E</span>
+          </div>
+          <a href="#mapSection" class="source-badge isro" style="cursor: pointer;">Expand Live View ↗</a>
+        </div>
+
+        <div id="heroMiniMap" class="preview-map-box">
+          <!-- Leaflet mini-preview instance mounts here -->
+        </div>
+
+        <div style="margin-top: 0.65rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.725rem; color: var(--text-subtle); font-family: var(--font-mono);">
+          <span class="badge-simulated">ISRO Synthetic Baseline</span>
+          <span style="color: var(--forest-800);">Active Overpass: EOS-04</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       2. Problem & Solution
+       ========================================================================== -->
+  <section id="overview" class="site-section problem-solution-section">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Operational Context</span>
+        <h2>Bridging Orbital Earth Observation with Ranger Ground Reality</h2>
+        <p class="section-subhead">
+          India's forest rangers protect over 713,000 square kilometres of biodiversity. Traditional monitoring workflows are disconnected from high-tempo satellite telemetry.
+        </p>
+      </div>
+
+      <div class="three-block-grid">
+        <!-- Block 1 -->
+        <article class="block-card">
+          <div class="block-number">
+            <span>CHALLENGE 01</span>
+            <span class="source-badge">The Ground Blindspot</span>
+          </div>
+          <h3 class="block-title">What Forest Teams Struggle With</h3>
+          <p class="block-body">
+            Field rangers face fragmented spatial data, delayed thermal fire alerts from raw satellite passes, and severe communication blackouts during monsoon or cyclonic weather. When field incidents occur in deep gorges or estuarine creeks, reports sit un-transmitted because patrol squads don't know when the next low-Earth orbit satellite window opens.
+          </p>
+          <div class="persona-tag-list">
+            <span class="persona-tag">Field Patrol Squads</span>
+            <span class="persona-tag">Range Beat Officers</span>
+            <span class="persona-tag">Watchtower Crews</span>
+          </div>
+        </article>
+
+        <!-- Block 2 -->
+        <article class="block-card">
+          <div class="block-number">
+            <span>SOLUTION 02</span>
+            <span class="source-badge isro">The HABITAT IQ Engine</span>
+          </div>
+          <h3 class="block-title">What HABITAT IQ Does</h3>
+          <p class="block-body">
+            HABITAT IQ fuses multi-spectral vegetation indices (VEDAS), weather radar (MOSDAC), and high-resolution radar/optical passes (Bhoonidhi &amp; Bhuvan) into a unified risk deck. It calculates 7-day predictive risk curves, maps wildlife corridor bottlenecks, and predicts upcoming satellite pass windows—scheduling field dispatch automatically even when links fail.
+          </p>
+          <div class="persona-tag-list">
+            <span class="persona-tag">7-Day Risk Forecasting</span>
+            <span class="persona-tag">Pass Window Calculation</span>
+            <span class="persona-tag">DTN Store &amp; Forward</span>
+          </div>
+        </article>
+
+        <!-- Block 3 -->
+        <article class="block-card">
+          <div class="block-number">
+            <span>APPLICATION 03</span>
+            <span class="source-badge">Field Deployment</span>
+          </div>
+          <h3 class="block-title">Who It Is For</h3>
+          <p class="block-body">
+            Designed for <strong>Divisional Forest Officers</strong> directing anti-poaching and fire crews, <strong>Wildlife Researchers</strong> safeguarding vulnerable tiger and rhino corridors across fractured habitats, and <strong>Disaster Response Units (NDRF / SDRF)</strong> mobilizing emergency flood or landslide evacuations.
+          </p>
+          <div class="persona-tag-list">
+            <span class="persona-tag">Forest Officers</span>
+            <span class="persona-tag">Wildlife Researchers</span>
+            <span class="persona-tag">Disaster Response Teams</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. LIVE SATELLITE MAP (The Centerpiece Feature)
+       ========================================================================== -->
+  <section id="mapSection" class="satellite-map-section">
+    <div class="container">
+      <div class="map-section-head">
+        <div>
+          <span class="section-eyebrow">Geospatial Intelligence Centerpiece</span>
+          <h2>Live Satellite Environmental Map</h2>
+          <p class="section-subhead">
+            Full-spectrum multi-layer cartography powered by ISRO Bhuvan and Earth observation feeds. Explore vegetation density, thermal anomalies, migration corridors, and low-Earth orbit pass footprints.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+          <span class="source-badge isro">Imagery: ISRO Bhuvan Baseline</span>
+          <span class="badge-simulated">Live Synced to Dashboard</span>
+          <button id="toggleSidePanelBtn" class="btn btn-secondary btn-sm" title="Toggle Intel Side Panel">
+            Toggle Intel Panel ◨
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Map Viewport & Collapsible Side Panel -->
+      <div id="mapViewportWrapper" class="map-viewport-wrapper">
+        <div class="main-map-frame">
+          
+          <!-- Fallback Notice Banner -->
+          <div id="mapFallbackBanner" class="map-fallback-banner">
+            <span>ℹ️</span>
+            <span>Using fallback open basemap. Add your Bhuvan API token in <code>map-config.js</code> to enable official ISRO WMS tiles.</span>
+          </div>
+
+          <!-- Floating Map Toolbar (Top Left) -->
+          <div class="map-floating-bar-top-left">
+            <select id="mapQuickRegionJump" class="map-control-btn" style="padding-right: 1.5rem;" title="Fly map directly to forest reserve">
+              <option value="sundarbans">Fly to: Sundarbans</option>
+              <option value="kaziranga">Fly to: Kaziranga</option>
+              <option value="western-ghats">Fly to: Western Ghats</option>
+              <option value="corbett">Fly to: Jim Corbett</option>
+              <option value="bandhavgarh">Fly to: Bandhavgarh</option>
+            </select>
+
+            <button id="resetMapViewBtn" class="map-control-btn" title="Reset view to region center">
+              ⟲ Reset View
+            </button>
+
+            <button id="mapFullscreenBtn" class="map-control-btn" title="Toggle Fullscreen Map">
+              ⛶ Fullscreen
+            </button>
+
+            <button id="measureDistanceBtn" class="map-control-btn" title="Measure distance between field coordinates">
+              📏 Measure
+            </button>
+
+            <button id="drawAoiBtn" class="map-control-btn" title="Draw Area of Interest (AOI) box to compute risk">
+              📐 Draw AOI
+            </button>
+          </div>
+
+          <!-- Floating Map Toolbar (Top Right: Basemap & Layers) -->
+          <div class="map-floating-bar-top-right">
+            <!-- Basemap Switcher Group (Satellite is DEFAULT) -->
+            <div class="basemap-switcher-group" role="group" aria-label="Basemap Style Switcher">
+              <button id="btnBasemapSatellite" class="basemap-opt-btn active" title="Satellite Mode (ISRO / Earth Observation)">
+                Satellite
+              </button>
+              <button id="btnBasemapTerrain" class="basemap-opt-btn" title="Terrain & Topographic Contours">
+                Terrain
+              </button>
+              <button id="btnBasemapPlain" class="basemap-opt-btn" title="Clean Editorial Topo (Plain)">
+                Plain
+              </button>
+            </div>
+
+            <!-- Overlays Drawer Toggle -->
+            <button id="toggleLayersDrawerBtn" class="layers-drawer-toggle-btn" title="Toggle Environmental Overlays">
+              Layers &amp; Legends ▾
+            </button>
+
+            <!-- Dropdown Layer Checklist -->
+            <div id="layersDropdownPanel" class="layers-dropdown-panel">
+              <div style="font-family: var(--font-serif); font-size: 1rem; color: var(--forest-950); border-bottom: 1px solid var(--border-light); padding-bottom: 0.35rem; display: flex; justify-content: space-between;">
+                <strong>Satellite Overlays</strong>
+                <span style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-subtle);">Opacity: 35%</span>
+              </div>
+
+              <!-- Layer 1: Forest Cover -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 10px; background: #52B788; border-radius: 2px; display: inline-block;"></span>
+                  Forest Cover Density
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">VEDAS</span>
+                  <input type="checkbox" id="chkLayerForest" checked>
+                </div>
+              </label>
+
+              <!-- Layer 2: Fire Hotspots -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 10px; background: #D90429; border-radius: 50%; display: inline-block;"></span>
+                  Active Fire Hotspots
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">MOSDAC</span>
+                  <input type="checkbox" id="chkLayerFire" checked>
+                </div>
+              </label>
+
+              <!-- Layer 3: Deforestation & Threats -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 10px; background: #BD5340; border-radius: 2px; display: inline-block;"></span>
+                  Threat Alerts &amp; Clearings
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">Bhuvan</span>
+                  <input type="checkbox" id="chkLayerThreats" checked>
+                </div>
+              </label>
+
+              <!-- Layer 4: Wildlife Corridors -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 3px; background: #E76F51; display: inline-block;"></span>
+                  Wildlife Corridors &amp; Chokes
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">Bhuvan</span>
+                  <input type="checkbox" id="chkLayerCorridors" checked>
+                </div>
+              </label>
+
+              <!-- Layer 5: Disaster Risk Zones -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 10px; background: #F4A261; border-radius: 2px; display: inline-block;"></span>
+                  Flood / Landslide Hazard Zones
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">MOSDAC</span>
+                  <input type="checkbox" id="chkLayerRiskZones" checked>
+                </div>
+              </label>
+
+              <!-- Layer 6: Satellite Swath Footprint -->
+              <label class="layer-toggle-row">
+                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="width: 10px; height: 10px; background: #4CC9F0; border-radius: 2px; display: inline-block;"></span>
+                  Upcoming Pass Footprint
+                </span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <span class="source-badge isro" style="font-size: 0.65rem;">Bhoonidhi</span>
+                  <input type="checkbox" id="chkLayerSatPass" checked>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Floating Time Slider & Auto-Refresh Bar (Bottom Left) -->
+          <div class="map-floating-bar-bottom-left">
+            <div class="time-slider-row">
+              <span id="timeSliderLabelBefore" style="color: var(--text-subtle);">2024 Baseline</span>
+              <input type="range" id="timeCompareSlider" min="0" max="1" step="1" value="1" title="Compare Before (2024 Historical Baseline) vs Now (2026 Current ISRO Telemetry)">
+              <span id="timeSliderLabelNow" style="color: var(--forest-900); font-weight: 600;">2026 Current</span>
+            </div>
+            <div class="auto-refresh-row">
+              <span id="mapLastUpdatedTimestamp">Last Ingest: Today, 04:15 IST</span>
+              <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+                <input type="checkbox" id="autoRefreshCheckbox" checked>
+                <span>Auto-refresh (5m)</span>
+                <span class="status-dot green pulse"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Leaflet Main Map Canvas -->
+          <div id="liveSatelliteMap"></div>
+        </div>
+
+        <!-- Collapsible Region Intel Side Panel -->
+        <aside id="mapSidePanel" class="map-side-panel">
+          <div class="side-panel-header">
+            <div>
+              <span class="section-eyebrow" style="font-size: 0.68rem; margin-bottom: 0.2rem;">Live Spatial Intel</span>
+              <h3 id="sidePanelRegionName" style="font-size: 1.25rem; line-height: 1.2; color: var(--forest-950);">Sundarbans Biosphere</h3>
+              <span id="sidePanelEcoType" style="font-size: 0.75rem; color: var(--text-subtle); font-family: var(--font-mono);">Tidal Mangrove Delta</span>
+            </div>
+            <div style="text-align: right;">
+              <div id="sidePanelRiskScore" class="risk-dial-score" style="font-size: 1.35rem; color: var(--clay-600);">54/100</div>
+              <span style="font-size: 0.65rem; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-subtle);">Risk Score</span>
+            </div>
+          </div>
+
+          <!-- Active Alerts in Map Bounds -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+              <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; font-family: var(--font-mono); color: var(--forest-900);">
+                Active Alerts On Map
+              </span>
+              <span id="sidePanelAlertCount" class="sev-badge high" style="font-size: 0.65rem;">3 Alerts</span>
+            </div>
+            <div id="sidePanelAlertsList" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 220px; overflow-y: auto;">
+              <!-- Dynamic alert mini items with click-to-zoom -->
+            </div>
+          </div>
+
+          <!-- Upcoming Pass Tracker -->
+          <div style="background: var(--bg-canvas); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <span style="font-size: 0.72rem; font-family: var(--font-mono); text-transform: uppercase; color: var(--forest-700); font-weight: 600;">
+                Orbital Pass Tracker
+              </span>
+              <span class="source-badge isro" style="font-size: 0.62rem;">Bhoonidhi</span>
+            </div>
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--forest-950);" id="sidePanelPassSat">EOS-04 (RISAT-1A SAR)</div>
+            <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.2rem;" id="sidePanelPassDetails">
+              Pass Start: 04:22 IST (In 12 mins) · Duration: 8m 40s · El: 79°
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="side-panel-quick-actions">
+            <button id="sidePanelSimDisruptionBtn" class="btn btn-outline-forest btn-sm" onclick="document.getElementById('disruptionToggle').click()">
+              ⚡ Toggle Disruption Mode
+            </button>
+            <a href="#dashboard" class="btn btn-primary btn-sm">
+              Open Full Analysis Deck ↓
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. Command Dashboard (11 Integrated Modules)
+       ========================================================================== -->
+  <section id="dashboard" class="dashboard-masthead">
+    <div class="container">
+      <div class="dashboard-bar-top">
+        <div class="dashboard-title-area">
+          <span class="section-eyebrow" style="color: var(--forest-200);">Operational Command Deck</span>
+          <h2 id="currentRegionName">Sundarbans Biosphere Reserve</h2>
+          <p id="currentRegionMeta">Integrated Telemetry Feed · ISRO Sensor Suite · Synchronized Clock: 04:10 IST</p>
+        </div>
+
+        <div class="dashboard-controls-cluster">
+          <!-- Space-Service Resilience Disruption Toggle -->
+          <div id="disruptionToggle" class="disruption-toggle-box" role="switch" aria-checked="false" tabindex="0" title="Simulate severe space-weather or satellite outage">
+            <div class="switch-label-col">
+              <span class="title">Simulate Service Disruption</span>
+              <span class="sub">LEO Outage &amp; Delay-Tolerant Routing</span>
+            </div>
+            <div class="custom-toggle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div class="stats-strip">
+        <div class="stat-pill">
+          <div class="label">
+            <span>Composite Vulnerability</span>
+            <span class="source-badge isro">MOSDAC / VEDAS</span>
+          </div>
+          <div id="statRiskIndex" class="value">54/100</div>
+          <div id="statRiskSub" class="subnote">Moderate Risk · Tidal Flood Watch</div>
+        </div>
+
+        <div class="stat-pill">
+          <div class="label">
+            <span>Canopy NDVI Index</span>
+            <span class="source-badge isro">VEDAS AWiFS</span>
+          </div>
+          <div id="statNdvi" class="value">0.73</div>
+          <div id="statNdviSub" class="subnote">Resilient Tidal Canopy</div>
+        </div>
+
+        <div class="stat-pill">
+          <div class="label">
+            <span>Next Satellite Contact</span>
+            <span class="source-badge isro">EOS-04 (RISAT-1A)</span>
+          </div>
+          <div id="statNextPass" class="value">In 12 mins</div>
+          <div id="statNextPassSub" class="subnote">Direct Overpass (8m 40s)</div>
+        </div>
+
+        <div class="stat-pill">
+          <div class="label">
+            <span>Orbital Link State</span>
+            <span class="badge-simulated">RFC 5050 DTN</span>
+          </div>
+          <div id="statLinkStatus" class="value" style="color: #48BB78;">Nominal (18.4 Mbps)</div>
+          <div id="statLinkSub" class="subnote">Direct ISRO LEO contact</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disruption Banner (Space-Service Resilience) -->
+  <div class="container" style="padding-top: 1.5rem;">
+    <div id="disruptionBanner" class="disruption-alert-banner">
+      <div style="font-size: 1.6rem; line-height: 1;">⚠️</div>
+      <div class="disruption-alert-content">
+        <h4>Space-Service Disruption Simulation Active</h4>
+        <p id="disruptionWhatChanged">
+          Simulated storm attenuation has interrupted the primary LEO X-band downlink. The system has automatically activated Bundle Protocol RFC 5050 (Delay-Tolerant Networking), holding field reports in local non-volatile custody and mapping transmission to an upcoming secondary S-band store-and-forward window.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Modules Grid -->
+  <section class="site-section no-border" style="padding-top: 1.5rem; padding-bottom: 5rem;">
+    <div class="container">
+      <div class="dashboard-grid">
+
+        <!-- MODULE 1: Forest Health Monitor (col-span-7) -->
+        <div class="dash-card col-span-7">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Forest Health Monitor</h3>
+              <span class="subtitle">Vegetation Density &amp; 12-Month Canopy Cover Trajectory</span>
+            </div>
+            <span class="source-badge isro">Source: VEDAS · SAC-ISRO</span>
+          </div>
+
+          <div class="health-metrics-row">
+            <div class="metric-micro-box">
+              <div class="m-label">Current Canopy Cover</div>
+              <div id="healthCanopyCover" class="m-val">78.4%</div>
+            </div>
+            <div class="metric-micro-box">
+              <div class="m-label">12-Month Canopy Delta</div>
+              <div id="healthCanopyChange" class="m-val">+1.2%</div>
+            </div>
+            <div class="metric-micro-box">
+              <div class="m-label">Ecological State</div>
+              <div id="healthStatusTag" class="m-val" style="font-size: 0.95rem;">Resilient Tidal Canopy</div>
+            </div>
+          </div>
+
+          <div class="chart-container-box">
+            <canvas id="healthChartCanvas"></canvas>
+          </div>
+
+          <div class="plain-language-summary-box">
+            <div style="font-size: 0.72rem; font-family: var(--font-mono); text-transform: uppercase; color: var(--forest-700); margin-bottom: 0.25rem;">
+              Vegetation Diagnostic Briefing:
+            </div>
+            <p id="healthSummary">
+              Dense Rhizophora and Avicennia mangrove canopy remains resilient. Tidal creek siltation is moderate, with localized saline stress observed in non-flushed inner pockets.
+            </p>
+          </div>
+        </div>
+
+        <!-- MODULE 2 & 5: Disaster Risk Assessment & 7-Day Forecast (col-span-5) -->
+        <div class="dash-card col-span-5">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Disaster Risk Assessment</h3>
+              <span class="subtitle">Multi-Hazard Vulnerability Matrix (0–100 Scale)</span>
+            </div>
+            <span class="source-badge isro">Source: MOSDAC &amp; Bhuvan</span>
+          </div>
+
+          <div class="risk-matrix-grid">
+            <div class="risk-dial-item">
+              <div class="risk-dial-top">
+                <span class="risk-dial-label">Forest Fire Risk</span>
+                <span id="riskScoreFire" class="risk-dial-score">12/100</span>
+              </div>
+              <div class="risk-progress-track">
+                <div id="riskBarFire" class="risk-progress-bar" style="width: 12%;"></div>
+              </div>
+              <span class="source-badge" style="font-size: 0.65rem;">MOSDAC Thermal IR</span>
+            </div>
+
+            <div class="risk-dial-item">
+              <div class="risk-dial-top">
+                <span class="risk-dial-label">Flood / Inundation</span>
+                <span id="riskScoreFlood" class="risk-dial-score">86/100</span>
+              </div>
+              <div class="risk-progress-track">
+                <div id="riskBarFlood" class="risk-progress-bar" style="width: 86%;"></div>
+              </div>
+              <span class="source-badge" style="font-size: 0.65rem;">Bhuvan Flood Ingest</span>
+            </div>
+
+            <div class="risk-dial-item">
+              <div class="risk-dial-top">
+                <span class="risk-dial-label">Drought Stress</span>
+                <span id="riskScoreDrought" class="risk-dial-score">08/100</span>
+              </div>
+              <div class="risk-progress-track">
+                <div id="riskBarDrought" class="risk-progress-bar" style="width: 8%;"></div>
+              </div>
+              <span class="source-badge" style="font-size: 0.65rem;">VEDAS Soil Moisture</span>
+            </div>
+
+            <div class="risk-dial-item">
+              <div class="risk-dial-top">
+                <span class="risk-dial-label">Landslide / Slope</span>
+                <span id="riskScoreLandslide" class="risk-dial-score">04/100</span>
+              </div>
+              <div class="risk-progress-track">
+                <div id="riskBarLandslide" class="risk-progress-bar" style="width: 4%;"></div>
+              </div>
+              <span class="source-badge" style="font-size: 0.65rem;">Bhoonidhi Slope DEM</span>
+            </div>
+          </div>
+
+          <div class="why-score-accordion">
+            <h4>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Why This Score?
+            </h4>
+            <p id="whyScoreText">
+              MOSDAC oceanographic telemetry notes a 1.4-meter spring tide swell coinciding with a Bay of Bengal cyclonic depression. Low fire hazard due to wet saline mudflats, but acute risk of embankment breaches and tidal flooding across vulnerable fringe settlements.
+            </p>
+          </div>
+
+          <!-- 7-Day Forecast mini block -->
+          <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-family: var(--font-sans); font-size: 0.95rem; font-weight: 600; color: var(--forest-950);">
+                7-Day Risk Forecast
+              </span>
+              <span id="forecastConfidence" class="forecast-confidence-pill">
+                88% confidence (MOSDAC Radar)
+              </span>
+            </div>
+            <div class="forecast-chart-container">
+              <canvas id="forecastChartCanvas"></canvas>
+            </div>
+            <p id="forecastSummary" style="font-size: 0.825rem; color: var(--text-muted); line-height: 1.5;">
+              Risk will peak sharply on Days 2-3 due to full moon tidal surge combined with coastal depression wind shear, returning to seasonal baseline by Day 6.
+            </p>
+          </div>
+        </div>
+
+        <!-- MODULE 2 & 9: Threat Detection & Alerts Centre (col-span-7) -->
+        <div class="dash-card col-span-7">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Active Threat Detection &amp; Alerts Centre</h3>
+              <span class="subtitle">Fire Hotspots, Inundation Fronts, Encroachment &amp; Siltation</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="threatCountBadge" class="sev-badge high">3 Active Alerts</span>
+              <span class="source-badge isro">Bhuvan / MOSDAC</span>
+            </div>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="alerts-filter-bar">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-subtle); align-self: center;">Filter:</span>
+            <button class="filter-chip threat-type-chip active" data-type="all">All Types</button>
+            <button class="filter-chip threat-type-chip" data-type="fire">Fire Hotspots</button>
+            <button class="filter-chip threat-type-chip" data-type="flood">Flood / Water</button>
+            <button class="filter-chip threat-type-chip" data-type="encroachment">Encroachment</button>
+
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-subtle); align-self: center; margin-left: 0.5rem;">Severity:</span>
+            <button class="filter-chip threat-sev-chip active" data-sev="all">All</button>
+            <button class="filter-chip threat-sev-chip" data-sev="high">High</button>
+            <button class="filter-chip threat-sev-chip" data-sev="medium">Medium</button>
+            <button class="filter-chip threat-sev-chip" data-sev="low">Low</button>
+          </div>
+
+          <!-- Threat Feed -->
+          <div id="threatsList" class="threat-list-flow">
+            <!-- Dynamic Threat Cards -->
+          </div>
+        </div>
+
+        <!-- MODULE 3: Wildlife Habitat Analysis (col-span-5) -->
+        <div class="dash-card col-span-5">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Wildlife Habitat Analysis</h3>
+              <span class="subtitle">Key Focal Species, Corridors &amp; Fragmentation Pressures</span>
+            </div>
+            <span class="source-badge isro">Source: VEDAS &amp; Bhuvan</span>
+          </div>
+
+          <div id="wildlifeGrid" class="wildlife-grid">
+            <!-- Dynamic Species Cards -->
+          </div>
+
+          <div class="corridor-callout">
+            <div class="corridor-col">
+              <span style="font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; color: var(--forest-700); font-weight: 600; display: block; margin-bottom: 0.2rem;">
+                Corridor Connectivity State:
+              </span>
+              <p>
+                Status: <strong id="corridorStatus">Semi-Fragmented (Estuarine Channels)</strong><br>
+                Critical Pinch Zone: <span id="corridorVulnerable" style="color: var(--clay-600); font-weight: 500;">Pakhiralay-Gosaba buffer creek crossings</span>
+              </p>
+            </div>
+            <div style="text-align: right;">
+              <span id="corridorIndex" class="source-badge" style="background: var(--bg-surface); font-weight: 600;">
+                Corridor Connectivity: 72/100
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE 6: Satellite Contact Planner Timeline (col-span-12) -->
+        <div class="dash-card col-span-12">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Satellite Contact Planner</h3>
+              <span class="subtitle">Predicted Low-Earth Orbit Pass Windows for Field Sensor Telemetry &amp; Report Uplink</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-simulated">Orbital Mechanics Propagator (SGP4)</span>
+              <span class="source-badge isro">ISRO Mission Telemetry</span>
+            </div>
+          </div>
+
+          <div id="passTimeline" class="pass-timeline-track">
+            <!-- Dynamic pass rows -->
+          </div>
+        </div>
+
+        <!-- MODULE 7 & 8: Field Report Scheduler & Dispatcher (col-span-12) -->
+        <div class="dash-card col-span-12">
+          <div class="dash-card-header">
+            <div class="dash-card-title-col">
+              <h3>Field Report Scheduler &amp; Delay-Tolerant Uplink</h3>
+              <span class="subtitle">Queue incident briefings; automatically synchronized with optimal satellite contact passes</span>
+            </div>
+            <span class="source-badge">RFC 5050 Bundle Custody Transfer</span>
+          </div>
+
+          <div class="scheduler-two-col">
+            <!-- Compose Pane -->
+            <form id="reportForm" class="report-form-pane">
+              <span style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--forest-950); margin-bottom: 0.2rem;">
+                Draft Field Report
+              </span>
+
+              <div class="form-group">
+                <label class="form-label" for="reportTitle">Incident / Observation Title</label>
+                <input type="text" id="reportTitle" class="form-input" placeholder="e.g. Broken river embankment at sector 4" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="reportAuthor">Beat Officer / Author</label>
+                  <input type="text" id="reportAuthor" class="form-input" placeholder="e.g. Officer K. Sharma" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reportCategory">Category</label>
+                  <select id="reportCategory" class="form-select">
+                    <option value="Threat verification">Threat Verification</option>
+                    <option value="Wildlife sighting">Wildlife Sighting / Conflict</option>
+                    <option value="Infrastructure damage">Infrastructure Damage</option>
+                    <option value="Fire incident">Active Fire Report</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="reportPriority">Priority Level</label>
+                  <select id="reportPriority" class="form-select">
+                    <option value="Normal">Normal</option>
+                    <option value="High">High</option>
+                    <option value="Urgent">Urgent (Flash Transmit)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="reportCoords">GPS Coordinate Lock</label>
+                  <input type="text" id="reportCoords" class="form-input" value="21.9497° N, 88.9007° E" readonly style="background: var(--bg-surface-soft);">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="reportSummary">Observations &amp; Operational Needs</label>
+                <textarea id="reportSummary" class="form-textarea" placeholder="Detail ground findings, required logistics, or coordinates needing verification..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
+                Queue for Next Satellite Pass
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </form>
+
+            <!-- Active Queue Pane -->
+            <div class="report-queue-pane">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <span style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--forest-950);">
+                  Queued Outbox Telemetry
+                </span>
+                <span class="badge-simulated">Local Non-Volatile Custody</span>
+              </div>
+
+              <div id="reportQueueList" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 420px; overflow-y: auto;">
+                <!-- Dynamic Queue Cards -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       5. How It Works (4-Step Simple Flow)
+       ========================================================================== -->
+  <section id="how-it-works" class="site-section">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Architecture &amp; Data Pipeline</span>
+        <h2>How HABITAT IQ Operates</h2>
+        <p class="section-subhead">
+          A four-tier operational lifecycle transforming raw orbital remote sensing into dependable ranger actions.
+        </p>
+      </div>
+
+      <div class="how-it-works-grid">
+        <div class="step-card">
+          <div class="step-badge">01</div>
+          <h3 class="step-title">Multi-Mission Telemetry</h3>
+          <p class="step-text">
+            Ingests multispectral, synthetic aperture radar (SAR), and thermal data from ISRO portals (Bhuvan, MOSDAC, VEDAS, and Bhoonidhi) over scheduled orbital passes.
+          </p>
+          <div class="step-tagline">Sensor Ingest Layer</div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-badge">02</div>
+          <h3 class="step-title">Machine Analytics &amp; Anomaly Detection</h3>
+          <p class="step-text">
+            Algorithms compute vegetation health (NDVI), canopy cover changes, soil saturation thresholds, and thermal heat signatures to detect threats before they escalate.
+          </p>
+          <div class="step-tagline">Spatial Intelligence Engine</div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-badge">03</div>
+          <h3 class="step-title">Disaster Risk &amp; Corridor Modeling</h3>
+          <p class="step-text">
+            Translates complex remote-sensing indicators into human-readable 0-100 risk scores, 7-day vulnerability forecasts, and animal corridor pinch-point advisories.
+          </p>
+          <div class="step-tagline">Tactical Decision Layer</div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-badge">04</div>
+          <h3 class="step-title">Resilient Report Delivery</h3>
+          <p class="step-text">
+            Calculates exact satellite pass windows for field teams. When space weather or hardware outages occur, the planner shifts seamlessly to delay-tolerant store-and-forward routing.
+          </p>
+          <div class="step-tagline">Space-Service Resilience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       6. ISRO Data Sources & Team Credentials
+       ========================================================================== -->
+  <section id="sources" class="site-section" style="background: var(--bg-surface);">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Authoritative Data Foundations</span>
+        <h2>ISRO Earth Observation Portals</h2>
+        <p class="section-subhead">
+          HABITAT IQ adheres strictly to data streams powered by the Indian Space Research Organisation (ISRO).
+        </p>
+      </div>
+
+      <div class="sources-grid">
+        <article class="source-card">
+          <div class="source-header">
+            <div class="source-title-group">
+              <h3>Bhuvan</h3>
+              <div class="agency">NRSC · ISRO (National Remote Sensing Centre)</div>
+            </div>
+            <a href="https://bhuvan.nrsc.gov.in" target="_blank" rel="noopener noreferrer" class="source-badge isro">bhuvan.nrsc.gov.in ↗</a>
+          </div>
+          <p class="source-role">
+            ISRO's flagship geospatial portal providing high-resolution multi-spectral Indian Earth Observation imagery, base cadastre boundaries, and near-real-time active forest fire hotspot alerts from the Forest Survey of India (FSI) sensor feeds.
+          </p>
+          <div class="source-meta-table">
+            <div class="source-meta-row">
+              <span>Primary Payloads:</span>
+              <strong>Cartosat-2/3 PAN, LISS-IV, Thematic Forest Cover</strong>
+            </div>
+            <div class="source-meta-row">
+              <span>Cadence:</span>
+              <strong>Near Real-Time (6-12 hr latency)</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="source-card">
+          <div class="source-header">
+            <div class="source-title-group">
+              <h3>MOSDAC</h3>
+              <div class="agency">SAC · ISRO (Space Applications Centre)</div>
+            </div>
+            <a href="https://www.mosdac.gov.in" target="_blank" rel="noopener noreferrer" class="source-badge isro">mosdac.gov.in ↗</a>
+          </div>
+          <p class="source-role">
+            Meteorological &amp; Oceanographic Satellite Data Archival Centre delivering geostationary thermal infrared imagery, cloud microphysics, rainfall estimates, and oceanic wave swell tracking from INSAT and Oceansat satellites.
+          </p>
+          <div class="source-meta-table">
+            <div class="source-meta-row">
+              <span>Primary Payloads:</span>
+              <strong>INSAT-3D / 3DR Imager &amp; Sounder, Oceansat-3</strong>
+            </div>
+            <div class="source-meta-row">
+              <span>Cadence:</span>
+              <strong>Continuous Half-Hourly Broadcasts</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="source-card">
+          <div class="source-header">
+            <div class="source-title-group">
+              <h3>VEDAS</h3>
+              <div class="agency">SAC · ISRO (Space Applications Centre)</div>
+            </div>
+            <a href="https://vedas.sac.gov.in" target="_blank" rel="noopener noreferrer" class="source-badge isro">vedas.sac.gov.in ↗</a>
+          </div>
+          <p class="source-role">
+            Visualisation of Earth observation Data and Archival System specialized in vegetation index (NDVI/EVI) time series, land degradation, desertification, forest biomass dynamics, and slope stability modeling for hilly terrain.
+          </p>
+          <div class="source-meta-table">
+            <div class="source-meta-row">
+              <span>Primary Payloads:</span>
+              <strong>Resourcesat-2A AWiFS, RISAT-1A SAR Biomass</strong>
+            </div>
+            <div class="source-meta-row">
+              <span>Cadence:</span>
+              <strong>8-Day and 15-Day Composite Baselines</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="source-card">
+          <div class="source-header">
+            <div class="source-title-group">
+              <h3>Bhoonidhi</h3>
+              <div class="agency">NRSC · ISRO (National Remote Sensing Centre)</div>
+            </div>
+            <a href="https://bhoonidhi.nrsc.gov.in" target="_blank" rel="noopener noreferrer" class="source-badge isro">bhoonidhi.nrsc.gov.in ↗</a>
+          </div>
+          <p class="source-role">
+            National Remote Sensing Centre open data dissemination gateway providing calibrated synthetic aperture radar (SAR) backscatter from EOS-04, cartographic digital elevation models (DEM), and multi-spectral LISS sensor suites.
+          </p>
+          <div class="source-meta-table">
+            <div class="source-meta-row">
+              <span>Primary Payloads:</span>
+              <strong>EOS-04 (RISAT-1A C-band SAR), Resourcesat-2/2A</strong>
+            </div>
+            <div class="source-meta-row">
+              <span>Cadence:</span>
+              <strong>Daily Low-Earth Orbit Pass Ingest</strong>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div style="margin-top: 2rem; background: var(--bg-surface-soft); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="badge-simulated" style="margin-bottom: 0.35rem;">Transparent Data Policy</span>
+          <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0;">
+            Where real-time programmatic API connectivity is restricted or behind government intranet gateways, HABITAT IQ renders high-fidelity simulated datasets modeled accurately on ISRO orbital parameters, sensor resolutions, and RFC 5050 DTN protocols.
+          </p>
+        </div>
+        <span class="source-badge" style="background: #FFFFFF;">Zero Hallucinations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       7. About / Hackathon Section
+       ========================================================================== -->
+  <section id="about" class="site-section">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Project Origin</span>
+        <h2>Built for ASTRA 2026</h2>
+        <p class="section-subhead">
+          Designed and developed by senior engineering pair programmers for the ASTRA 2026 Hackathon, hosted by ANTERiX Club at VIT Bhopal.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 2rem; display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: center;">
+        <div>
+          <h3 style="font-size: 1.45rem; color: var(--forest-950); margin-bottom: 0.65rem;">
+            Design Philosophy: Utility Over Cliché
+          </h3>
+          <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem;">
+            Most modern tech demos rely on neon purple gradients, floating cards with glowing drop shadows, and filler corporate buzzwords. HABITAT IQ was crafted from the ground up to mirror the dignity, restraint, and operational clarity of an authentic field-research organization. Every metric has a unit, every risk score has a physical explanation, and every satellite window is grounded in real orbital mechanics.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <span class="source-badge isro">ASTRA 2026 Submission</span>
+            <span class="source-badge">ANTERiX Club · VIT Bhopal</span>
+            <span class="source-badge">Human-Centric UX</span>
+          </div>
+        </div>
+
+        <div style="background: var(--forest-50); border: 1px solid var(--forest-200); border-radius: var(--radius-sm); padding: 1.5rem;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--forest-700); font-weight: 600;">
+            Submission Snapshot
+          </span>
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.6; color: var(--forest-950);">
+            <strong>Platform:</strong> HABITAT IQ<br>
+            <strong>Track:</strong> Space Technology &amp; Disaster Resilience<br>
+            <strong>Stack:</strong> Pure HTML5, CSS3, Vanilla JS, Leaflet, Chart.js<br>
+            <strong>Zero Backend:</strong> Instantly deployable to GitHub Pages.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. Site Footer
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-wrapper" style="margin-bottom: 0.85rem;">
+            <div class="brand-logo-mark" style="background: #FFFFFF; color: var(--forest-950);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+              </svg>
+            </div>
+            <span class="brand-title" style="color: #FFFFFF;">HABITAT IQ</span>
+          </div>
+          <p>
+            Forest Intelligence, Wildlife Protection &amp; Space-Service Resilience. Synthesizing ISRO Earth Observation telemetry for ground command squads.
+          </p>
+          <div style="margin-top: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: #9CA3AF;">
+            Built overnight at ASTRA 2026.
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>ISRO Portals</h4>
+          <ul class="footer-links-list">
+            <li><a href="https://bhuvan.nrsc.gov.in" target="_blank" rel="noopener">Bhuvan Geo-Platform ↗</a></li>
+            <li><a href="https://www.mosdac.gov.in" target="_blank" rel="noopener">MOSDAC Weather &amp; Ocean ↗</a></li>
+            <li><a href="https://vedas.sac.gov.in" target="_blank" rel="noopener">VEDAS Vegetation System ↗</a></li>
+            <li><a href="https://bhoonidhi.nrsc.gov.in" target="_blank" rel="noopener">Bhoonidhi Data Gateway ↗</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Reserves Monitored</h4>
+          <ul class="footer-links-list">
+            <li><a href="#mapSection" onclick="window.switchRegion('sundarbans')">Sundarbans Mangroves</a></li>
+            <li><a href="#mapSection" onclick="window.switchRegion('kaziranga')">Kaziranga Floodplains</a></li>
+            <li><a href="#mapSection" onclick="window.switchRegion('western-ghats')">Western Ghats (Nilgiri)</a></li>
+            <li><a href="#mapSection" onclick="window.switchRegion('corbett')">Jim Corbett Shivaliks</a></li>
+            <li><a href="#mapSection" onclick="window.switchRegion('bandhavgarh')">Bandhavgarh Highlands</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Hackathon Credentials</h4>
+          <p style="font-size: 0.85rem;">
+            <strong>ASTRA 2026</strong><br>
+            Organized by ANTERiX Club<br>
+            VIT Bhopal University<br>
+            Madhya Pradesh, India
+          </p>
+          <div style="margin-top: 0.85rem;">
+            <a href="#home" class="btn btn-secondary btn-sm" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #FFF;">
+              Back to Top ↑
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <span>© 2026 HABITAT IQ · Open Geospatial Intelligence Initiative</span>
+        <span>Telemetry Sim Engine v4.2 · RFC 5050 Delay-Tolerant Networking Protocol</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       Printable Field Briefing Modal Sheet
+       ========================================================================== -->
+  <div id="exportModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+    <div class="export-modal-sheet">
+      <div id="exportContent">
+        <!-- Dynamically generated briefing document -->
+      </div>
+      <div class="print-actions-bar">
+        <button id="closeModalBtn" class="btn btn-secondary">Close</button>
+        <button id="printModalBtn" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print Field Briefing / Save PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       AI Chatbox ("Ask HABITAT IQ" - Powered by Habi)
+       ========================================================================== -->
+  <button id="chatLauncher" class="chat-launcher-btn" aria-label="Open Habi, HABITAT IQ Field Assistant">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+    <span>Ask Habi</span>
+    <span class="status-dot green pulse" style="margin-left: 2px;"></span>
+  </button>
+
+  <aside id="chatDrawer" class="chat-drawer" role="complementary" aria-label="Habi AI Field Intelligence Chat">
+    <div class="chat-drawer-header">
+      <div class="chat-header-title">
+        <div class="chat-avatar-badge" aria-hidden="true">🌿</div>
+        <div>
+          <strong>Habi · HABITAT IQ</strong>
+          <div style="font-size: 0.65rem; color: #D1D5DB; font-family: var(--font-mono);">Forest Intelligence Teammate</div>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button id="clearChatBtn" class="chat-icon-btn" title="Clear chat conversation">↺</button>
+        <button id="closeChatBtn" class="chat-icon-btn" title="Close chat panel">✕</button>
+      </div>
+    </div>
+
+    <!-- Message stream -->
+    <div id="chatMessages" class="chat-messages-container">
+      <!-- Dynamic chat bubbles rendered by Habi -->
+    </div>
+
+    <!-- Typing indicator with three soft dots -->
+    <div id="typingIndicator" class="typing-indicator">
+      <span class="typing-dots">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="typing-text">Habi is thinking...</span>
+    </div>
+
+    <!-- Suggested Question Chips (Updated dynamically by Habi) -->
+    <div id="chatChipTray" class="chat-chip-tray">
+      <button class="chat-chip">Highest risk region today</button>
+      <button class="chat-chip">Next satellite pass</button>
+      <button class="chat-chip">Show fire hotspots</button>
+      <button class="chat-chip">Run outage simulation</button>
+    </div>
+
+    <!-- Chat Input Bar -->
+    <div class="chat-input-bar">
+      <textarea id="chatInput" class="chat-input" rows="1" placeholder="Ask Habi anything in English, Hindi, or Hinglish..."></textarea>
+      <button id="chatVoiceBtn" class="chat-voice-btn" type="button" title="Speak to Habi (Voice Input)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
+        </svg>
+      </button>
+      <button id="chatSendBtn" class="chat-send-btn" aria-label="Send message">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Application Scripts -->
+  <script src="map-config.js"></script>
+  <script src="chat-config.js"></script>
+  <script src="data.js"></script>
+  <script src="chat-brain.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
